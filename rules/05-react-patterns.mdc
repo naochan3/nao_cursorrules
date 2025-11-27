@@ -52,6 +52,17 @@ Description: ReactとNext.jsを使ったコンポーネント指向開発にお�
 - **`use()` API**: `useContext` や Promise の解決に使用し、条件分岐内での呼び出しも可能です。
 
 # 4. コンポーネント設計と型安全性 (TypeScript)
+- **アイコン実装の原則 (Icon Implementation)**:
+    - **絵文字の禁止**: UIアイコンとしての絵文字（Unicode）の使用は禁止します。
+    - **推奨ライブラリ**: `lucide-react` または `heroicons` を使用してください。
+    ```tsx
+    // ❌ Bad
+    <button>📥 Download</button>
+
+    // ✅ Good
+    import { Download } from 'lucide-react';
+    <button><Download className="w-4 h-4 mr-2" />Download</button>
+    ```
 - **Props Interface**: 拡張性を考慮し、ネイティブのHTML属性を継承します。
     ```typescript
     interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
