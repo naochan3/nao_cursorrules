@@ -1,0 +1,257 @@
+---
+alwaysApply: true
+---
+Description: プロジェクト開始時に、プロジェクトの性質に応じて必要なルールを自動判定し、プロジェクトフォルダにコピーするためのルールセレクターです。新しいプロジェクトを作成する際は、必ずこのルールに従って必要なルールを選択・コピーしてください。
+
+# 🎯 ルールセレクター (Rule Selector)
+
+プロジェクト開始時に、このルールに従って必要なルールを判断し、プロジェクトフォルダにコピーしてください。
+
+## 1. プロジェクトタイプの判定
+
+プロジェクトの性質を以下のカテゴリから判定してください：
+
+### 1.1 プロジェクトカテゴリ
+- **フロントエンドのみ**: React/Next.js/Vue等のSPA、ポートフォリオサイト、ランディングページ
+- **フルスタック**: フロントエンド + バックエンド（API、DB、認証）
+- **バックエンドのみ**: APIサーバー、マイクロサービス
+- **インフラ/DevOps**: デプロイ、CI/CD、Docker設定
+
+### 1.2 デプロイ先
+- **PaaS**: Vercel、Railway、Render等
+- **GCP**: Cloud Run、Cloud SQL等
+- **その他**: AWS、Azure等
+
+### 1.3 デザインタイプ
+- **クリエイティブ**: ポートフォリオ、ブランドサイト、アート系
+- **実用**: ダッシュボード、管理画面、B2Bアプリ
+
+## 2. 必須ルール（全プロジェクト共通）
+
+以下のルールは、**全てのプロジェクトで必須**です。必ずコピーしてください：
+
+```
+00-mindset.mdc          # エンジニア思考原則
+02-environment-setup.mdc # 環境設定（PowerShell、日本語）
+22-tool-usage-policy.mdc # AIツール使用ポリシー
+23-security-policy.mdc   # セキュリティポリシー
+```
+
+## 3. プロジェクトタイプ別推奨ルール
+
+### 3.1 フロントエンドのみ
+
+**必須:**
+```
+01-design-system.mdc              # デザインシステム
+04-frontend-basics.mdc            # フロントエンド基礎
+05-react-patterns.mdc             # React/Next.jsパターン
+10-frontend-quality-assurance.mdc # 品質保証
+```
+
+**推奨:**
+```
+06-component-driven-development.mdc # Storybook使用時
+11-code-hygiene-and-refactoring.mdc # コード品質
+25-performance-tuning.mdc          # パフォーマンス最適化
+```
+
+**デプロイ時:**
+```
+13-deployment-paas.mdc  # Vercel/Railway等
+20-gcp-deploy-complete-guide.mdc  # GCP使用時
+```
+
+### 3.2 フルスタック
+
+**フロントエンドルール + 以下:**
+
+**必須:**
+```
+07-nodejs-best-practices.mdc      # Node.jsサーバー
+08-supabase-rules.mdc             # Supabase使用時
+09-integration-and-api-contracts.mdc # API連携
+12-docker-best-practices.mdc      # Docker使用時
+```
+
+**推奨:**
+```
+11-code-hygiene-and-refactoring.mdc
+13-deployment-paas.mdc または 20-gcp-deploy-complete-guide.mdc
+```
+
+### 3.3 バックエンドのみ
+
+**必須:**
+```
+07-nodejs-best-practices.mdc
+08-supabase-rules.mdc  # Supabase使用時
+09-integration-and-api-contracts.mdc
+12-docker-best-practices.mdc
+23-security-policy.mdc
+```
+
+**推奨:**
+```
+11-code-hygiene-and-refactoring.mdc
+13-deployment-paas.mdc または 20-gcp-deploy-complete-guide.mdc
+```
+
+### 3.4 その他の特殊ケース
+
+**スクレイピングプロジェクト:**
+```
+14-scraping-rules.mdc
+```
+
+**学習/ドキュメント生成:**
+```
+15-project-memory.mdc
+16-learning-documentation.mdc
+```
+
+## 4. ルールコピー手順
+
+プロジェクト開始時に、以下の手順を実行してください：
+
+### ステップ1: プロジェクトフォルダの確認
+```
+現在のプロジェクトフォルダ: [プロジェクトパス]
+```
+
+### ステップ2: .cursor/rules フォルダの作成
+```
+プロジェクトフォルダ/.cursor/rules/ を作成
+```
+
+### ステップ3: 必要なルールをコピー
+
+**方法1: 自動スクリプトを使用（推奨）**
+
+```powershell
+# ルールセレクターのスクリプトを実行
+cd C:\Users\石岡大尚\Desktop\Development\.cursor\rules\scripts
+.\copy-rules-to-project.ps1 `
+    -ProjectPath "C:\Projects\my-app" `
+    -ProjectType "frontend" `
+    -DeployTarget "vercel" `
+    -DesignType "creative"
+```
+
+**方法2: 手動でコピー**
+
+上記の「必須ルール」と「プロジェクトタイプ別推奨ルール」に基づいて、以下のコマンドでコピー：
+
+```powershell
+# 例: フロントエンドプロジェクトの場合
+Copy-Item ".cursor\rules\00-mindset.mdc" "[プロジェクトパス]\.cursor\rules\"
+Copy-Item ".cursor\rules\01-design-system.mdc" "[プロジェクトパス]\.cursor\rules\"
+Copy-Item ".cursor\rules\02-environment-setup.mdc" "[プロジェクトパス]\.cursor\rules\"
+Copy-Item ".cursor\rules\04-frontend-basics.mdc" "[プロジェクトパス]\.cursor\rules\"
+Copy-Item ".cursor\rules\05-react-patterns.mdc" "[プロジェクトパス]\.cursor\rules\"
+Copy-Item ".cursor\rules\10-frontend-quality-assurance.mdc" "[プロジェクトパス]\.cursor\rules\"
+Copy-Item ".cursor\rules\22-tool-usage-policy.mdc" "[プロジェクトパス]\.cursor\rules\"
+Copy-Item ".cursor\rules\23-security-policy.mdc" "[プロジェクトパス]\.cursor\rules\"
+```
+
+### ステップ4: コピーしたルールの記録
+プロジェクトフォルダに `RULES_USED.md` を作成し、使用したルールを記録：
+
+```markdown
+# 使用ルール一覧
+
+## 必須ルール
+- 00-mindset.mdc
+- 02-environment-setup.mdc
+- 22-tool-usage-policy.mdc
+- 23-security-policy.mdc
+
+## プロジェクトタイプ別ルール
+- 01-design-system.mdc
+- 04-frontend-basics.mdc
+- 05-react-patterns.mdc
+- 10-frontend-quality-assurance.mdc
+
+## コピー日時
+2025-01-XX
+```
+
+## 5. プロジェクト固有のルール追加
+
+プロジェクトの進行中に、プロジェクト固有のルールが必要になった場合：
+
+1. プロジェクトフォルダの `.cursor/rules/` に新しいルールファイルを作成
+2. ファイル名は `XX-project-specific-[名前].mdc` 形式（XXは番号）
+3. プロジェクト固有のルールは、既存のルールに影響を与えない
+
+**例:**
+```
+.cursor/rules/26-project-specific-api-rules.mdc
+.cursor/rules/27-project-specific-ui-components.mdc
+```
+
+## 6. プロジェクト完了後のルール統合判断
+
+プロジェクトが完了したら、以下の判断を行ってください：
+
+### 6.1 統合すべきか判断基準
+
+**統合すべき:**
+- 複数のプロジェクトで再利用可能なルール
+- 汎用的なベストプラクティス
+- 他のプロジェクトでも役立つ可能性が高い
+
+**統合しない:**
+- プロジェクト固有のビジネスロジック
+- そのプロジェクトだけで有効な制約
+- 実験的なルール（まだ検証が必要）
+
+### 6.2 統合手順
+
+1. プロジェクトフォルダの `.cursor/rules/` を確認
+2. 統合すべきルールを特定
+3. メインの `.cursor/rules/` にコピー
+4. ファイル名を適切にリネーム（重複しない番号を付与）
+5. `00-index.mdc` に追加
+6. プロジェクトフォルダのルールは削除せず、アーカイブとして残す
+
+## 7. AIへの指示
+
+プロジェクト開始時に、以下のように指示してください：
+
+```
+「新しい[プロジェクトタイプ]プロジェクトを作成します。
+@/.cursor/rules/00-rule-selector.mdc に従って、必要なルールを判断し、
+プロジェクトフォルダにコピーしてください。
+
+プロジェクト情報:
+- タイプ: [フロントエンドのみ/フルスタック/バックエンドのみ]
+- デプロイ先: [Vercel/GCP/その他]
+- デザインタイプ: [クリエイティブ/実用]
+- プロジェクトパス: [パス]
+」
+```
+
+## 8. ルールの進化サイクル
+
+```
+1. プロジェクト開始
+   ↓
+2. ルールセレクターで必要なルールを判断
+   ↓
+3. プロジェクトフォルダにルールをコピー
+   ↓
+4. プロジェクト固有のルールを追加・カスタマイズ
+   ↓
+5. 開発を進める（プロジェクト内のルールを参照）
+   ↓
+6. プロジェクト完了
+   ↓
+7. プロジェクト固有のルールを評価
+   ↓
+8. 汎用的なルールをメインルールに統合
+   ↓
+9. 次回のプロジェクトで統合されたルールが利用可能
+```
+
+このサイクルにより、ルールは実際の開発経験に基づいて進化していきます。
