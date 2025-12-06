@@ -38,6 +38,16 @@ Description: OWASP Top 10および業界標準に基づくセキュアコーデ�
 - **OSコマンドインジェクション**:
     - ユーザー入力をそのままシェルコマンドの引数として渡さないでください。
 
+# 5. HTTPセキュリティヘッダー (HTTP Security Headers)
+- **CSP (Content Security Policy)**: XSSを防ぐ最強の盾です。スクリプト、画像、スタイルシートなどの読み込み元をホワイトリストで厳格に制限します。
+- **HSTS (HTTP Strict Transport Security)**: 強制的にHTTPS接続を使用させ、中間者攻撃を防ぎます。
+- **X-Frame-Options**: クリックジャッキング攻撃を防ぐため、自サイトのコンテンツが`<iframe>`内に表示されるのを防ぎます（`DENY` または `SAMEORIGIN`）。
+- **AIへの指示**: 「Next.jsの`headers.config.js`（またはミドルウェア）に、厳格なCSP設定を追加して。外部スクリプトはGoogle Analyticsのみ許可する設定で。」
+
+# 6. レート制限 (Rate Limiting)
+- **考え方**: DoS攻撃やブルートフォース攻撃からAPIを守るため、同一IPからのリクエスト回数を制限します。
+- **AIへの指示**: 「`upstash/ratelimit`などを使って、このログインAPIに『1分間に5回まで』というレート制限を追加して。」
+
 ## 3. Supabaseセキュリティ特記 (Supabase Specifics)
 
 ### 3.1 RLS (Row Level Security) の徹底

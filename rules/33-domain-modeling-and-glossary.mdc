@@ -1,0 +1,46 @@
+---
+description: ドメイン概念の整理、用語集（Ubiquitous Language）、エンティティ定義に関するルールです。表記揺れを防ぎ、設計の一貫性を保ちます。
+globs: ["docs/domain/**/*.md", "src/types/**/*.ts", "src/domain/**/*.ts"]
+---
+
+# 33. ドメインモデリングと用語集 (Domain Modeling & Glossary)
+
+- Description: プロジェクト内で使用する「言葉」と「概念」を統一するためのルールです。エンジニア、デザイナー、PM、そしてAIが同じ言葉で会話できるようにします（ユビキタス言語）。
+
+# 1. 用語集 (Glossary / Ubiquitous Language)
+
+プロジェクトで使用する主要な名詞を定義し、**「別名（Alias）」を禁止**します。
+
+| 日本語名 | 英語名 (Code) | 定義・振る舞い | 禁止用語 (NG) |
+| :--- | :--- | :--- | :--- |
+| **ユーザー** | `User` | 認証済みのアカウント保持者。 | Member, Account |
+| **ワークスペース** | `Workspace` | 複数のプロジェクトを束ねる最上位の組織単位。 | Organization, Team |
+| **タスク** | `Task` | 完了すべき作業単位。期限と担当者を持つ。 | Todo, Ticket, Issue |
+
+- **ルール**:
+    - コード内の変数名、DBのカラム名、UIのラベルは、必ずこの用語集（英語名/日本語名）と一致させてください。
+    - 表記揺れ（例: "User" と "Member" の混在）はバグの温床です。
+
+# 2. ドメインモデル (Conceptual Model)
+
+データ構造（RDB）を考える前に、概念的な関係性を整理します。
+
+- **Entity (エンティティ)**: IDを持ち、ライフサイクル（作成〜削除）を通じて同一性が保たれるもの（例: User, Task）。
+- **Value Object (値オブジェクト)**: IDを持たず、属性値によって識別されるもの。不変（Immutable）として扱う（例: EmailAddress, DateRange, Money）。
+
+# 3. 関連性 (Relationships)
+
+Mermaidのクラス図 (`classDiagram`) を使い、エンティティ間の多重度（1対1、1対多）を可視化します。
+
+```mermaid
+classDiagram
+    Workspace "1" -- "*" Project : has
+    Project "1" -- "*" Task : contains
+    User "1" -- "*" Task : assigned to
+```
+
+# 4. AIへの指示
+
+- 「このプロジェクトの用語集を作成したい。現状のコードと画面から、主要な概念（名詞）を抽出してテーブルにまとめて。」
+- 「『見積もり』と『請求』の概念モデルを整理して。値オブジェクトとして扱うべきものはどれ？」
+- 「変数名に `client` が使われているけど、用語集では `customer` と定義されている。全て `customer` にリファクタリングして。」

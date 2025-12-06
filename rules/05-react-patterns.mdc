@@ -3,6 +3,8 @@ alwaysApply: false
 ---
 Description: ReactとNext.jsを使ったコンポーネント指向開発における、一貫性のあるモダンな設計パターンを定義します。React 19, Next.js 15, FSDアーキテクチャに基づいています。
 
+**重要**: システム開発における期待レベル（`00-mindset.mdc`のセクション8、`26-implementation-process.mdc`）を必ず遵守してください。単一ページのダッシュボードのみ、基本的なCRUD操作のみで満足することは絶対に禁止です。
+
 # 1. Feature-Sliced Design (FSD) アーキテクチャ
 プロジェクトのディレクトリ構造は、FSD (Feature-Sliced Design) に基づき、機能単位での凝集度を高め、結合度を下げます。
 
@@ -18,38 +20,81 @@ Description: ReactとNext.jsを使ったコンポーネント指向開発にお�
     - `shared` は他のどの層もインポート不可。
 
 # 2. Next.js 15 & Server Actions Patterns
+- **Caching Strategy (Next.js 15 Changes)**:
+    - Next.js 15では `fetch` リクエストのキャッシュ動作がデフォルトで `no-store` (動的) に変更されました。静的なデータを取得する場合は明示的に `cache: 'force-cache'` を指定してください。
+    - ルートハンドラ (`route.ts`) のGETメソッドもデフォルトで動的です。
+
 - **Server Actions + Zod Validation**:
-    - フォーム処理はAPIルートではなく、Server Actionsを使用します。
-    - サーバーサイドで `zod` を用いた厳格なバリデーションを実行します。
+    - フォーム処理は Server Actions を使用し、`zod` で厳格にバリデーションします。
+    - **`useActionState`** (旧 `useFormState`) を使用して、サーバーからの状態（成功/失敗/バリデーションエラー）を管理します。
     
     ```typescript
     // app/actions.ts
     'use server'
     import { z } from 'zod';
-
+    
     const schema = z.object({
       email: z.string().email(),
     });
 
-    export async function subscribe(prevState: any, formData: FormData) {
+    type State = {
+      errors?: { email?: string[] };
+      message?: string;
+    };
+
+    export async function subscribe(prevState: State, formData: FormData): Promise<State> {
       const result = schema.safeParse({ email: formData.get('email') });
+      
       if (!result.success) {
         return { errors: result.error.flatten().fieldErrors };
       }
-      // DB処理など
-      return { message: 'Success' };
+      
+      try {
+        // DB操作など
+        return { message: '登録しました' };
+      } catch (e) {
+        return { message: 'サーバーエラーが発生しました' };
+      }
     }
     ```
 
 - **Server Components First**:
-    - デフォルトで Server Component を使用し、非同期データ取得 (`async/await`) をコンポーネントレベルで行います。
-    - クライアントでの対話が必要な末端の葉（Leaf）コンポーネントのみ `'use client'` を付与します。
+    - 非同期データ取得は Server Components で行います。
+    - クライアントでの対話が必要な部分のみ `'use client'` を付与し、Leaf Component（末端の部品）として切り出します。
 
 # 3. React 19 Modern Hooks
-- **`useActionState`**: Server Actions の実行結果、エラー、ペンディング状態を一元管理します。
-- **`useOptimistic`**: サーバーレスポンスを待たずにUIを更新する「楽観的更新」で、体感速度を向上させます。
-- **`useFormStatus`**: 子コンポーネントから親フォームの送信状態を参照するために使用します。
-- **`use()` API**: `useContext` や Promise の解決に使用し、条件分岐内での呼び出しも可能です。
+- **`useActionState`**:
+    - Server Actions の実行結果、ローディング状態 (`isPending`)、エラーを一元管理します。
+    ```tsx
+    'use client'
+    import { useActionState } from 'react';
+    import { subscribe } from './actions';
+
+    export function SignupForm() {
+      const [state, formAction, isPending] = useActionState(subscribe, {});
+      
+      return (
+        <form action={formAction}>
+          <input name="email" />
+          {state.errors?.email && <p>{state.errors.email[0]}</p>}
+          <button disabled={isPending}>{isPending ? '送信中...' : '登録'}</button>
+        </form>
+      );
+    }
+    ```
+
+- **`useOptimistic`**:
+    - サーバーレスポンスを待たずにUIを即座に更新し、体感速度を向上させます。
+    ```tsx
+    const [optimisticMessages, addOptimisticMessage] = useOptimistic(
+      messages,
+      (state, newMessage) => [...state, newMessage]
+    );
+    ```
+
+- **`use` API**:
+    - `useContext` や Promise の解決に使用します。条件分岐内 (`if`) でも呼び出し可能です。
+    - クライアントコンポーネントでPromiseを受け取る際に `await` の代わりに使用します。
 
 # 4. コンポーネント設計と型安全性 (TypeScript)
 - **アイコン実装の原則 (Icon Implementation)**:

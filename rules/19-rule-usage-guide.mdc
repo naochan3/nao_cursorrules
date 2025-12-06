@@ -18,7 +18,7 @@ Description: Cursorルールの効果的な使用方法と、どのタイミン�
 その後、プロジェクトフォルダ内のルールを参照して開発を進める
 ```
 
-**注意**: ルールセレクターは `alwaysApply: true` なので、自動的に読み込まれます。プロジェクト開始時は、ルールセレクターに従って必要なルールをコピーしてください。
+**注意**: プロジェクト開始時は、`00-rule-selector.mdc`に従って必要なルールをコピーしてください。
 
 ### 実装フェーズ
 ```
@@ -44,9 +44,15 @@ Description: Cursorルールの効果的な使用方法と、どのタイミン�
 ## 2. ルール優先順位
 
 ### 最優先 (alwaysApply: true)
-1. **index.mdc** - プロジェクト憲法（全ての判断の基準）
-2. **00-engineer-mindset.mdc** - エンジニア思考原則
-3. **01-design-system.mdc** - デザインシステム
+1. **00-mindset.mdc** - エンジニア思考原則（DRY, KISS, YAGNI等）
+2. **01-design-system.mdc** - デザインシステム
+3. **02-environment-setup.mdc** - 環境設定（日本語解説、PowerShell構文）
+4. **22-tool-usage-policy.mdc** - ツール使用ポリシー
+5. **23-security-policy.mdc** - セキュリティポリシー
+
+### 条件付き適用 (alwaysApply: false、必要時のみ)
+- **26-implementation-process.mdc** - システム開発要求時のみ適用（デザイン判断フレームワークを含む）
+- **00-rule-selector.mdc** - プロジェクト開始時のみ適用
 
 ### 状況依存 (alwaysApply: false)
 - 開発フェーズや技術スタックに応じて必要時のみ適用

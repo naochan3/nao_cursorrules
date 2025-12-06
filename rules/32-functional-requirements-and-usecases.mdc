@@ -1,0 +1,54 @@
+---
+description: ユーザーストーリー、受け入れ条件、ユースケースを定義するためのルールです。要件定義の精度を高め、AIによる実装とテストの質を向上させます。
+globs: ["docs/requirements.md", "docs/usecases/**/*.md"]
+---
+
+# 32. 機能要件とユースケース (Functional Requirements & Use Cases)
+
+- Description: 「機能リスト」ではなく「ユーザーの物語（ストーリー）」として要件を定義します。これにより、AIは文脈を理解し、より適切な実装とテストコードを生成できるようになります。
+
+# 1. User Story (ユーザーストーリー)
+
+機能要件は以下の形式（3C: Card, Conversation, Confirmation）で記述してください。
+
+```markdown
+### [タイトル] ユーザーはタスクの優先度を変更できる
+
+- **As a (誰が)**: チームリーダーとして
+- **I want to (何をしたい)**: タスクの優先度をドラッグ＆ドロップで変更したい
+- **So that (なぜなら)**: 朝会でチームの注力ポイントを素早く整理したいから
+```
+
+# 2. Acceptance Criteria (受け入れ条件)
+
+実装完了（Definition of Done）の判定基準を **Gherkin形式 (Given/When/Then)** または箇条書きで明確にします。
+
+```markdown
+- **Scenario 1: 正常系**
+    - **Given**: タスク一覧が表示されている
+    - **When**: 「タスクA」を「タスクB」の上にドロップする
+    - **Then**: 「タスクA」の優先度が上がり、サーバーに保存される
+    - **And**: 画面リロード後も順序が維持されている
+
+- **Scenario 2: エラー系**
+    - **When**: オフライン状態で変更操作を行う
+    - **Then**: 元の位置に戻り、トーストで「通信エラー」が表示される
+```
+
+# 3. ユースケース図・シナリオ
+
+複雑なフローの場合は、Mermaid記法を使ってフローを可視化してください。
+
+```mermaid
+sequenceDiagram
+    User->>Frontend: タスク移動
+    Frontend->>Backend: API更新リクエスト
+    Backend-->>Frontend: 200 OK
+    Frontend-->>User: 完了通知
+```
+
+# 4. AIへの指示
+
+- 「『領収書発行機能』のユーザーストーリーと受け入れ条件（正常系・異常系）を作成して。PDF生成とメール送信が含まれる。」
+- 「以下の要件定義から、Mermaidでシーケンス図を描いて。」
+- 「この受け入れ条件をもとに、PlaywrightのE2Eテストコードを生成して。」

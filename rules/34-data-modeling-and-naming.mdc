@@ -1,0 +1,47 @@
+---
+description: データベースのテーブル設計、カラム命名規則、マイグレーション運用に関するルールです。Supabase/Cloud SQLでの実装を前提とします。
+globs: ["supabase/migrations/*.sql", "src/types/database.types.ts", "**/*.sql"]
+---
+
+# 34. データモデリングと命名規則 (Data Modeling & Naming)
+
+- Description: 物理データベース（RDB）の設計ルールです。可読性、整合性、拡張性を重視し、SQLアンチパターンを回避します。
+
+# 1. 命名規則 (Naming Conventions)
+
+PostgreSQL (Supabase) の標準に準拠します。
+
+- **テーブル名**: `snake_case`, **複数形** (例: `users`, `order_items`, `subscriptions`)
+- **カラム名**: `snake_case` (例: `created_at`, `is_active`, `user_id`)
+- **主キー**: 原則 `id`。
+- **外部キー**: `[単数形テーブル名]_id` (例: `user_id`, `project_id`)
+- **Boolean**: `is_` または `has_` で始める (例: `is_published`, `has_permission`)
+- **日時**: `_at` で終わる (例: `created_at`, `updated_at`, `deleted_at`)
+
+# 2. ID設計 (Identity Design)
+
+- **推奨**: `UUID (v4)`
+    - 分散システムでのユニーク性担保、推測困難性（セキュリティ）の観点で推奨。
+    - Supabase: `id uuid DEFAULT gen_random_uuid() PRIMARY KEY`
+- **使用箇所**: ユーザーID、公開リソースIDなど。
+- **連番 (SERIAL/IDENTITY)**:
+    - 内部管理用、またはURLを短くしたい場合のみ検討するが、原則UUID推奨。
+
+# 3. カラム設計のベストプラクティス
+
+- **NOT NULL制約**: 可能な限りつける。NULLは「値がない」のか「不明」なのか区別がつかず、バグの原因になる。
+- **Default値**: アプリケーション側ではなく、DB側でデフォルト値（`DEFAULT now()`, `DEFAULT false`）を設定する。
+- **JSONB型**: 柔軟性が必要な場合（設定値、外部APIレスポンス保存など）のみ使用する。検索が必要な主要属性は必ずカラムに切り出すこと。
+
+# 4. マイグレーション運用
+
+- **破壊的変更の回避**:
+    - カラム削除、NOT NULL追加などは、既存データがある場合にアプリケーションを落とす可能性がある。
+    - 手順: 「カラム追加(Nullable) → データ移行 → アプリコード変更 → 制約追加(Not Null) → (旧カラム削除)」のステップを踏む。
+- **ダウンマイグレーション**: 全てのマイグレーションファイルに対して、ロールバック用SQLも意識する（Supabase CLIでは自動生成されない場合があるため注意）。
+
+# 5. AIへの指示
+
+- 「このユーザーストーリーを満たすためのテーブル設計（ER図）をMermaidで提案して。命名規則はルール34に従って。」
+- 「`users`テーブルに`status`カラムを追加したい。ENUM型を使うべきか、参照テーブルを作るべきか、メリット・デメリットを比較して提案して。」
+- 「このSQL、命名規則に違反していないかチェックして。外部キー制約とインデックスも忘れずに。」

@@ -3,36 +3,79 @@ alwaysApply: false
 ---
 Description: このプロジェクトで定義されている全てのルールファイルの一覧と、その内容のサマリーをまとめた「目次」です。どのルールを使えばよいか分からなくなった時に、このファイルを@メンションで呼び出して、内容を確認してください。
 
+# 🚀 開発開始時の絶対ルール (Bootstrap Protocol)
+
+**AI Agent / Plan Mode は、新規プロジェクト作成や大規模機能追加の依頼を受けた際、いかなる計画よりも先に以下の手順を自律的に実行してください。**
+
+1.  **Read**: `00-rule-selector.mdc` を読み込み、ルール環境構築のロジックを理解する。
+2.  **Scaffold**: プロジェクト用のルートディレクトリを作成する。
+3.  **Install**: このマスター `rules/` から必要なルールを選定し、プロジェクト内の `.cursor/rules/` に物理コピーする。
+4.  **Extend**: プロジェクト固有のルール（例: 特定のAPI仕様やデザイン要件）が不足している場合、その場で新規ルールファイルを作成する。
+
+**「環境（ルール）が整っていない状態でコードを書き始めること」は固く禁じます。**
+
 # 🗺️ Cursor Rule マスターインデックス
 
-| ファイル名 | フェーズ | 目的・サマリー |
-| :--- | :--- | :--- |
-| **`00-index.mdc`** | (目次) | **【このファイル】** 全ルールのインデックス。 |
-| **`00-rule-selector.mdc`** | メタルール | **【最重要・常時適用】** プロジェクト開始時に必要なルールを自動判定し、プロジェクトフォルダにコピーするルールセレクター。 |
-| **`index.mdc`** | (全体憲法) | **【最重要】** プロジェクトの目的、技術スタック、コアバリューを定義。 |
-| **`00-mindset.mdc`** | 0: 思想と哲学 | DRY, KISS, YAGNI原則など、技術以前のプロとしての思考法を定義。 |
-| **`01-design-system.mdc`** | 0: 思想と哲学 | プロジェクトのビジュアル（色、フォント、余白、影など）を定義する「デザインの憲法」。**プロジェクトタイプ別（クリエイティブ/実用）の選択肢あり。** |
-| **`02-environment-setup.mdc`**| 1: 環境とワークフロー | 「日本語での解説徹底」ルール、PowerShellのコマンド構文など、PC環境設定。 |
-| **`03-git-github-workflow.mdc`**| 1: 環境とワークフロー | `feature/`ブランチ運用、コミットメッセージ規約、PRテンプレート。 |
-| **`04-frontend-basics.mdc`** | 2: 実装 (フロント) | セマンティックなHTML、CSS設計、モダンJavaScriptの基本。 |
-| **`05-react-patterns.mdc`** | 2: 実装 (フロント) | 関数コンポーネント、Hooks、FSDアーキテクチャ、Next.js Server Actions。 |
-| **`06-component-driven-development.mdc`** | 2: 実装 (フロント) | コンポーネント駆動開発とStorybookの活用。 |
-| **`07-nodejs-best-practices.mdc`** | 3: 実装 (バック) | Node.jsサーバー開発のルール、環境変数、エラーハンドリング。 |
-| **`08-supabase-rules.mdc`** | 3: 実装 (バック) | RLS、安全なクエリ、Supabaseセキュリティ。 |
-| **`09-integration-and-api-contracts.mdc`** | 3: 実装 (バック) | API型定義、命名規則、通信状態管理。 |
-| **`10-frontend-quality-assurance.mdc`** | 4: 品質保証 | デザインカンプ一致、レスポンシブ、アクセシビリティ(a11y)チェック。 |
-| **`11-code-hygiene-and-refactoring.mdc`** | 4: 品質保証 | ボーイスカウト・ルール、デッドコード削除、リファクタリング指針。 |
-| **`12-docker-best-practices.mdc`** | 4: 品質保証 | マルチステージビルド、イメージサイズ削減、セキュリティ。 |
-| **`13-deployment-paas.mdc`**| 4: 品質保証 | Vercel/Railwayデプロイ、環境変数、ログ確認。 |
-| **`14-scraping-rules.mdc`** | 5: 学習と進化 | 倫理的なスクレイピング作法。 |
-| **`15-project-memory.mdc`** | 5: 学習と進化 | 重要な決定や変更を記録する「短期記憶ログ」の作成。 |
-| **`16-learning-documentation.mdc`** | 5: 学習と進化 | プロジェクトの「生きた教科書」を生成するルール。 |
-| **`17-static-to-dynamic-workflow.mdc`** | 5: 学習と進化 | 静的HTML/CSSを動的アプリに変換する5段階プロセス。 |
-| **`18-refactoring-and-path-consistency.mdc`** | 5: 学習と進化 | リファクタリングとパス構造の一貫性維持。 |
-| **`19-rule-usage-guide.mdc`** | メタルール | **【活用ガイド】** ルールの優先順位、AIへの指示方法、タスク分類。 |
-| **`20-gcp-deploy-complete-guide.mdc`** | 4: 品質保証 | **【GCP完全ガイド】** Cloud Runデプロイ、Cloud SQL、完全自動化スクリプト (PowerShell対応)。 |
-| **`21-workflow-master.mdc`** | 1: 環境とワークフロー | **【ソロ開発最適化】** 高速な立ち上げ、承認フロー撤廃、自動化ワークフロー。 |
-| **`22-tool-usage-policy.mdc`** | メタルール | AIツールの使用ポリシー（並列実行、ファイル操作など）。 |
-| **`23-security-policy.mdc`** | 0: 思想と哲学 | OWASP Top 10に基づくセキュリティポリシー。 |
-| **`24-growth-marketing.mdc`** | 0: 思想と哲学 | グロースマーケティング、行動経済学、KPI設定。 |
-| **`25-performance-tuning.mdc`** | 4: 品質保証 | Core Web Vitals、パフォーマンス予算、最適化戦略。 |
+## ルールの階層構造
+
+### Level 1: コアルール（常時適用 - alwaysApply: true）
+全てのプロジェクトで自動的に読み込まれる必須ルールです。
+
+### Level 2: プロセスルール（条件付き適用 - alwaysApply: false）
+特定の状況（システム開発要求時など）にのみ適用されるルールです。
+
+### Level 3: 技術ルール（プロジェクトタイプに応じて適用）
+プロジェクトの性質や技術スタックに応じて選択的に適用されるルールです。
+
+---
+
+| ファイル名 | フェーズ | 目的・サマリー | 階層 |
+| :--- | :--- | :--- | :--- |
+| **`00-index.mdc`** | (目次) | **【このファイル】** 全ルールのインデックス。 | - |
+| **`00-rule-selector.mdc`** | メタルール | プロジェクト開始時に必要なルールを自動判定し、プロジェクトフォルダにコピーするルールセレクター。 | Level 2 |
+| **`index.mdc`** | (全体憲法) | プロジェクトの目的、技術スタック、コアバリューを定義。 | Level 1 |
+| **`00-mindset.mdc`** | 0: 思想と哲学 | DRY, KISS, YAGNI原則など、技術以前のプロとしての思考法を定義。**システム開発における期待レベル（画面構成、機能設計、デザインの柔軟性、深い思考）を含む。** 関連: `26-implementation-process.mdc`, `01-design-system.mdc`, `19-rule-usage-guide.mdc` | Level 1 |
+| **`01-design-system.mdc`** | 0: 思想と哲学 | プロジェクトのビジュアル（色、フォント、余白、影など）を定義する「デザインの憲法」。**プロジェクトタイプ別（クリエイティブ/実用）の選択肢あり。** 関連: `00-mindset.mdc`, `26-implementation-process.mdc`, `19-rule-usage-guide.mdc` | Level 1 |
+| **`02-environment-setup.mdc`**| 1: 環境とワークフロー | 「日本語での解説徹底」ルール、PowerShellのコマンド構文など、PC環境設定。 | Level 1 |
+| **`03-git-github-workflow.mdc`**| 1: 環境とワークフロー | `feature/`ブランチ運用、コミットメッセージ規約、PRテンプレート。 | Level 3 |
+| **`04-frontend-basics.mdc`** | 2: 実装 (フロント) | セマンティックなHTML、CSS設計、モダンJavaScriptの基本。 | Level 3 |
+| **`05-react-patterns.mdc`** | 2: 実装 (フロント) | 関数コンポーネント、Hooks、FSDアーキテクチャ、Next.js Server Actions。 | Level 3 |
+| **`06-component-driven-development.mdc`** | 2: 実装 (フロント) | コンポーネント駆動開発とStorybookの活用。 | Level 3 |
+| **`07-nodejs-best-practices.mdc`** | 3: 実装 (バック) | Node.jsサーバー開発のルール、環境変数、エラーハンドリング。 | Level 3 |
+| **`08-supabase-rules.mdc`** | 3: 実装 (バック) | RLS、安全なクエリ、Supabaseセキュリティ。 | Level 3 |
+| **`09-integration-and-api-contracts.mdc`** | 3: 実装 (バック) | API型定義、命名規則、通信状態管理。 | Level 3 |
+| **`10-frontend-quality-assurance.mdc`** | 4: 品質保証 | デザインカンプ一致、レスポンシブ、アクセシビリティ(a11y)チェック。 | Level 3 |
+| **`11-code-hygiene-and-refactoring.mdc`** | 4: 品質保証 | ボーイスカウト・ルール、デッドコード削除、リファクタリング指針。 | Level 3 |
+| **`12-docker-best-practices.mdc`** | 4: 品質保証 | マルチステージビルド、イメージサイズ削減、セキュリティ。 | Level 3 |
+| **`13-deployment-paas.mdc`**| 4: 品質保証 | Vercel/Railwayデプロイ、環境変数、ログ確認。 | Level 3 |
+| **`14-scraping-rules.mdc`** | 5: 学習と進化 | 倫理的なスクレイピング作法。 | Level 3 |
+| **`15-project-memory.mdc`** | 5: 学習と進化 | 重要な決定や変更を記録する「短期記憶ログ」の作成。 | Level 3 |
+| **`16-learning-documentation.mdc`** | 5: 学習と進化 | プロジェクトの「生きた教科書」を生成するルール。 | Level 3 |
+| **`17-static-to-dynamic-workflow.mdc`** | 5: 学習と進化 | 静的HTML/CSSを動的アプリに変換する5段階プロセス。 | Level 3 |
+| **`18-refactoring-and-path-consistency.mdc`** | 5: 学習と進化 | リファクタリングとパス構造の一貫性維持。 | Level 3 |
+| **`19-rule-usage-guide.mdc`** | メタルール | ルールの優先順位、AIへの指示方法、タスク分類。**YAGNI原則とMVPの関係、シンプルさの定義を明確化。** 関連: `00-mindset.mdc`, `26-implementation-process.mdc`, `01-design-system.mdc` | Level 2 |
+| **`20-gcp-deploy-complete-guide.mdc`** | 4: 品質保証 | Cloud Runデプロイ、Cloud SQL、完全自動化スクリプト (PowerShell対応)。 | Level 3 |
+| **`21-workflow-master.mdc`** | 1: 環境とワークフロー | 高速な立ち上げ、承認フロー撤廃、自動化ワークフロー。 | Level 3 |
+| **`22-tool-usage-policy.mdc`** | メタルール | AIツールの使用ポリシー（並列実行、ファイル操作など）。 | Level 1 |
+| **`23-security-policy.mdc`** | 0: 思想と哲学 | OWASP Top 10に基づくセキュリティポリシー。 | Level 1 |
+| **`24-growth-marketing.mdc`** | 0: 思想と哲学 | グロースマーケティング、行動経済学、KPI設定。 | Level 3 |
+| **`25-performance-tuning.mdc`** | 4: 品質保証 | Core Web Vitals、パフォーマンス予算、最適化戦略。 | Level 3 |
+| **`26-implementation-process.mdc`** | 0: 思想と哲学 | システム開発の実装プロセス。フェーズ1（要求分析と設計）を省略して実装を開始することは絶対に禁止。セクション7にデザイン判断フレームワークを含む（詳細は`01-design-system.mdc`のセクション1.1を参照）。**単一ページのダッシュボードのみ、基本的なCRUD操作のみで満足することは絶対に禁止。** 関連: `00-mindset.mdc`, `01-design-system.mdc`, `19-rule-usage-guide.mdc` | Level 2 |
+| **`27-testing-strategy.mdc`** | 4: 品質保証 | プロダクトフェーズ（MVP/Stable）に応じたテスト戦略と自動化。 | Level 3 |
+| **`28-observability-and-logging.mdc`** | 4: 品質保証 | 構造化ログ、メトリクス、エラー追跡による可観測性確保。 | Level 3 |
+| **`29-ai-product-rules.mdc`** | 2: 実装 (AI) | AI機能実装時のプロンプト管理、安全性、品質基準。 | Level 3 |
+| **`30-non-functional-requirements.mdc`** | 4: 品質保証 | パフォーマンス、信頼性、セキュリティ等の非機能要件基準値。 | Level 3 |
+
+## v2 Expansion Rules (定義・設計・モデリング)
+| **`31-product-vision-and-problem-framing.mdc`** | 0: 思想と哲学 | ビジョン、課題定義、成功指標 (KPI) の明確化。 | Level 2 |
+| **`32-functional-requirements-and-usecases.mdc`** | 1: 要件定義 | ユーザーストーリー、受け入れ条件、ユースケース定義。 | Level 2 |
+| **`33-domain-modeling-and-glossary.mdc`** | 1: 要件定義 | ドメインモデル、用語集 (Ubiquitous Language) の統一。 | Level 2 |
+| **`34-data-modeling-and-naming.mdc`** | 3: 実装 (バック) | DBテーブル設計、命名規則、マイグレーション運用。 | Level 3 |
+
+## v2 Expansion Rules (チーム・UX・アーキテクチャ)
+| **`35-project-management-lite.mdc`** | 1: 環境とワークフロー | Issue管理、優先順位(P0-P3)、運用リズム。 | Level 2 |
+| **`36-code-review-guidelines.mdc`** | 1: 環境とワークフロー | レビュー観点、コメントラベル、心理的安全性。 | Level 2 |
+| **`37-ux-research-and-ia.mdc`** | 1: 要件定義 | 簡易UXリサーチ、画面遷移図、情報設計(IA)。 | Level 2 |
+| **`38-forms-validation-and-error-ux.mdc`** | 2: 実装 (フロント) | フォームUX、バリデーションタイミング、エラー表示。 | Level 3 |
+| **`39-layout-and-responsive-strategy.mdc`** | 2: 実装 (フロント) | ブレークポイント戦略、モバイル表示制御。 | Level 3 |
+| **`40-architecture-and-layering.mdc`** | 0: 思想と哲学 | アプリケーションのレイヤリング、依存方向の原則。 | Level 1 |

@@ -1,0 +1,41 @@
+---
+description: アプリケーション全体のレイヤリング、依存方向、責務分担に関するアーキテクチャルールです。
+globs: ["src/app/**/*.ts", "src/features/**/*.ts", "src/services/**/*.ts"]
+---
+
+# 40. アーキテクチャとレイヤリング (Architecture & Layering)
+
+- Description: コードの置き場所と依存関係を整理し、スパゲッティコードを防ぐための「地図」です。機能追加時にどこにコードを書くべきかを定義します。
+
+# 1. レイヤリング構造 (Layering)
+
+典型的な3層+1アーキテクチャを採用します（Frontend/Backend共通の考え方）。
+
+1.  **Presentation Layer (UI/Controller)**
+    - **役割**: ユーザー入力の受付、画面表示、APIルート定義。
+    - **場所**: `src/app`, `src/components`, `src/app/api`
+    - **ルール**: ビジネスロジックを直接書かない。Service層を呼ぶだけ。
+2.  **Application/Service Layer (Business Logic)**
+    - **役割**: ユースケースの実現、複数リポジトリの調整、トランザクション管理。
+    - **場所**: `src/services`, `src/features/*/model`
+    - **ルール**: DBクエリ（SQL）を直接書かない。Repository層を呼ぶ。
+3.  **Domain/Data Layer (Repository/Entity)**
+    - **役割**: データの永続化（DB操作）、外部API通信、ドメインルールの定義。
+    - **場所**: `src/repositories`, `src/domain`
+    - **ルール**: UIの事情（Reactの状態など）を知らない純粋な関数/クラスにする。
+
+# 2. 依存方向の原則 (Dependency Rule)
+
+- **原則**: 「外側（UI）」は「内側（Service/Domain）」に依存してよいが、逆は禁止。
+    - OK: `UI -> Service -> Repository`
+    - NG: `Service -> UI` (ServiceがReactコンポーネントをimportするなど)
+
+# 3. 共通機能 (Shared / Utils)
+
+- どの層からも呼び出してよいユーティリティ（日付操作、ログ、バリデーション）。
+- ただし、Utilsの中にビジネスロジックを混ぜないよう注意する。
+
+# 4. AIへの指示
+
+- 「このロジック、Reactコンポーネント(`page.tsx`)の中に全部書かれている。`src/services/authService.ts` にビジネスロジックを移動して、レイヤリングを整理して。」
+- 「新しい機能を追加するにあたり、Controller, Service, Repositoryの各ファイルを作成し、依存関係を正しく実装して。」

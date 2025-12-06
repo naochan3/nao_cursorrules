@@ -34,3 +34,11 @@ Description: BaaSであるSupabaseを利用する際の、セキュリティ、�
 # 5. 認証はSupabaseの組み込み機能に任せる
 - **考え方**: ユーザー認証の仕組みを自前で実装するのは非常に複雑で、セキュリティリスクが伴います。Supabaseは`signUp`, `signInWithPassword`, `signOut`, `onAuthStateChange`といった強力で安全な認証ヘルパーを提供しているので、これらを最大限に活用しましょう。
 - **AIへの指示**: 「Supabase Authを使った、メールアドレスとパスワードでのサインアップ機能の実装例を教えて。」
+
+# 6. Edge Functions の使い分け
+- **考え方**: 全てのロジックをクライアント側に書くのはセキュリティ上危険ですし、全てをSQL（PL/pgSQL）で書くのは保守性が低いです。
+- **使い分け基準**:
+    - **Database Webhooks**: データの変更（INSERT/UPDATE）をトリガーに外部APIを叩く場合や、軽量な通知処理。
+    - **Edge Functions (Deno)**: Stripe決済、OpenAI API呼び出し、複雑なビジネスロジック、定期実行（Cron）が必要な処理。
+    - **Client Side**: UIの表示制御、単純なCRUD操作。
+- **AIへの指示**: 「ユーザーが画像をアップロードした後に、自動的にサムネイルを生成したい。これはDatabase Webhookでやるべき？それともEdge Functions？理由と一緒に教えて。」

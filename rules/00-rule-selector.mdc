@@ -1,257 +1,190 @@
 ---
-alwaysApply: true
+description: プロジェクト開始時に必要なルールを自動判定し、プロジェクトフォルダにコピーするルールセレクター。
+globs: []
 ---
-Description: プロジェクト開始時に、プロジェクトの性質に応じて必要なルールを自動判定し、プロジェクトフォルダにコピーするためのルールセレクターです。新しいプロジェクトを作成する際は、必ずこのルールに従って必要なルールを選択・コピーしてください。
 
-# 🎯 ルールセレクター (Rule Selector)
+# 00. ルールセレクターと環境構築 (Rule Selector & Setup)
 
-プロジェクト開始時に、このルールに従って必要なルールを判断し、プロジェクトフォルダにコピーしてください。
+- Description: 新規プロジェクト作成時、AI Agentが自律的にルール環境を構築するためのロジックとスクリプトです。
 
-## 1. プロジェクトタイプの判定
+# 1. AI Agent 向け行動プロトコル (Agent Protocol)
 
-プロジェクトの性質を以下のカテゴリから判定してください：
+Plan Mode または Agent Mode で「新規プロジェクト」または「大規模機能追加」の指示を受けた際、AIは以下の思考プロセスとアクションを**必ず**実行してください。
 
-### 1.1 プロジェクトカテゴリ
-- **フロントエンドのみ**: React/Next.js/Vue等のSPA、ポートフォリオサイト、ランディングページ
-- **フルスタック**: フロントエンド + バックエンド（API、DB、認証）
-- **バックエンドのみ**: APIサーバー、マイクロサービス
-- **インフラ/DevOps**: デプロイ、CI/CD、Docker設定
+## Step 1: Analyze (分析)
+ユーザーの要求から、プロジェクトの性質（Project Type）を特定します。
 
-### 1.2 デプロイ先
-- **PaaS**: Vercel、Railway、Render等
-- **GCP**: Cloud Run、Cloud SQL等
-- **その他**: AWS、Azure等
+- **Frontend**: Next.js, React, Vue, Svelte など
+- **Backend**: Node.js, Express, NestJS, Supabase Functions など
+- **Fullstack**: Next.js + Supabase, T3 Stack など
+- **Infra**: Docker, Terraform, Ansible など
+- **AI/CLI**: Pythonスクリプト, MCPサーバー, CLIツール など
 
-### 1.3 デザインタイプ
-- **クリエイティブ**: ポートフォリオ、ブランドサイト、アート系
-- **実用**: ダッシュボード、管理画面、B2Bアプリ
-
-## 2. 必須ルール（全プロジェクト共通）
-
-以下のルールは、**全てのプロジェクトで必須**です。必ずコピーしてください：
-
-```
-00-mindset.mdc          # エンジニア思考原則
-02-environment-setup.mdc # 環境設定（PowerShell、日本語）
-22-tool-usage-policy.mdc # AIツール使用ポリシー
-23-security-policy.mdc   # セキュリティポリシー
-```
-
-## 3. プロジェクトタイプ別推奨ルール
-
-### 3.1 フロントエンドのみ
-
-**必須:**
-```
-01-design-system.mdc              # デザインシステム
-04-frontend-basics.mdc            # フロントエンド基礎
-05-react-patterns.mdc             # React/Next.jsパターン
-10-frontend-quality-assurance.mdc # 品質保証
-```
-
-**推奨:**
-```
-06-component-driven-development.mdc # Storybook使用時
-11-code-hygiene-and-refactoring.mdc # コード品質
-25-performance-tuning.mdc          # パフォーマンス最適化
-```
-
-**デプロイ時:**
-```
-13-deployment-paas.mdc  # Vercel/Railway等
-20-gcp-deploy-complete-guide.mdc  # GCP使用時
-```
-
-### 3.2 フルスタック
-
-**フロントエンドルール + 以下:**
-
-**必須:**
-```
-07-nodejs-best-practices.mdc      # Node.jsサーバー
-08-supabase-rules.mdc             # Supabase使用時
-09-integration-and-api-contracts.mdc # API連携
-12-docker-best-practices.mdc      # Docker使用時
-```
-
-**推奨:**
-```
-11-code-hygiene-and-refactoring.mdc
-13-deployment-paas.mdc または 20-gcp-deploy-complete-guide.mdc
-```
-
-### 3.3 バックエンドのみ
-
-**必須:**
-```
-07-nodejs-best-practices.mdc
-08-supabase-rules.mdc  # Supabase使用時
-09-integration-and-api-contracts.mdc
-12-docker-best-practices.mdc
-23-security-policy.mdc
-```
-
-**推奨:**
-```
-11-code-hygiene-and-refactoring.mdc
-13-deployment-paas.mdc または 20-gcp-deploy-complete-guide.mdc
-```
-
-### 3.4 その他の特殊ケース
-
-**スクレイピングプロジェクト:**
-```
-14-scraping-rules.mdc
-```
-
-**学習/ドキュメント生成:**
-```
-15-project-memory.mdc
-16-learning-documentation.mdc
-```
-
-## 4. ルールコピー手順
-
-プロジェクト開始時に、以下の手順を実行してください：
-
-### ステップ1: プロジェクトフォルダの確認
-```
-現在のプロジェクトフォルダ: [プロジェクトパス]
-```
-
-### ステップ2: .cursor/rules フォルダの作成
-```
-プロジェクトフォルダ/.cursor/rules/ を作成
-```
-
-### ステップ3: 必要なルールをコピー
-
-**方法1: 自動スクリプトを使用（推奨）**
+## Step 2: Scaffold (土台作成)
+まだプロジェクトフォルダが存在しない場合、作成します。
 
 ```powershell
-# ルールセレクターのスクリプトを実行
-cd C:\Users\石岡大尚\Desktop\Development\.cursor\rules\scripts
-.\copy-rules-to-project.ps1 `
-    -ProjectPath "C:\Projects\my-app" `
-    -ProjectType "frontend" `
-    -DeployTarget "vercel" `
-    -DesignType "creative"
+mkdir [project-name]; cd [project-name]
 ```
 
-**方法2: 手動でコピー**
+## Step 3: Install (ルール配置)
+特定した Project Type に基づき、マスターの `rules/` ディレクトリから、プロジェクト固有の `.cursor/rules/` ディレクトリへ必要なルールファイルをコピーします。
 
-上記の「必須ルール」と「プロジェクトタイプ別推奨ルール」に基づいて、以下のコマンドでコピー：
+**選定ロジック（思考ガイド）:**
+- **共通必須 (Must)**: `00-index`, `00-mindset`, `01-design-system`, `02-environment`, `22-tool`, `23-security`, `40-architecture`
+- **Frontendの場合**: `04-frontend`, `05-react`, `06-component`, `10-qa`, `38-forms`, `39-layout`
+- **Backendの場合**: `07-nodejs`, `08-supabase`, `09-api`, `12-docker`, `34-data-modeling`
+- **AI機能がある場合**: `29-ai-product`
+- **品質重視の場合**: `27-testing`, `28-observability`, `30-nfr`
+
+**実行コマンド例 (PowerShell):**
+```powershell
+# フォルダ作成
+mkdir .cursor/rules -Force
+
+# マスターからのコピー (パスは環境に合わせて調整)
+copy C:/Users/石岡大尚/Desktop/Development/.cursor/rules/00-index.mdc .cursor/rules/
+copy C:/Users/石岡大尚/Desktop/Development/.cursor/rules/00-mindset.mdc .cursor/rules/
+# ...必要なファイルをコピー...
+```
+
+## Step 4: Extend (拡張)
+コピーしたルールだけではカバーできない固有要件（例: 「今回は UIライブラリに Mantine を使う」など）がある場合、そのための新規ルールファイルを作成します。
+
+- **アクション**: `.cursor/rules/99-project-specific.mdc` を作成し、固有ルールを記述する。
+
+---
+
+# 2. 自動化スクリプト (Legacy Script)
+
+以下は、手動またはスクリプト実行環境で利用するためのPowerShellスクリプトです。AI Agentは上記のプロトコルに従って自律的にコマンドを実行することを推奨しますが、必要に応じてこのスクリプトを参照・実行しても構いません。
 
 ```powershell
-# 例: フロントエンドプロジェクトの場合
-Copy-Item ".cursor\rules\00-mindset.mdc" "[プロジェクトパス]\.cursor\rules\"
-Copy-Item ".cursor\rules\01-design-system.mdc" "[プロジェクトパス]\.cursor\rules\"
-Copy-Item ".cursor\rules\02-environment-setup.mdc" "[プロジェクトパス]\.cursor\rules\"
-Copy-Item ".cursor\rules\04-frontend-basics.mdc" "[プロジェクトパス]\.cursor\rules\"
-Copy-Item ".cursor\rules\05-react-patterns.mdc" "[プロジェクトパス]\.cursor\rules\"
-Copy-Item ".cursor\rules\10-frontend-quality-assurance.mdc" "[プロジェクトパス]\.cursor\rules\"
-Copy-Item ".cursor\rules\22-tool-usage-policy.mdc" "[プロジェクトパス]\.cursor\rules\"
-Copy-Item ".cursor\rules\23-security-policy.mdc" "[プロジェクトパス]\.cursor\rules\"
+<#
+.SYNOPSIS
+    プロジェクトタイプに応じて適切なカーソルルールを選択し、カレントディレクトリにコピーします。
+
+.DESCRIPTION
+    このスクリプトは、ユーザーにプロジェクトタイプ（frontend, backend, fullstack, infra, ai-agent-cli）を選択させ、
+    それに基づいて必要な .mdc ルールファイルを .cursor/rules ディレクトリに配置します。
+    既存のルールがある場合は上書き確認を行います。
+
+.PARAMETER ProjectType
+    プロジェクトの種類を指定します (frontend, backend, fullstack, infra, ai-agent-cli)。
+
+.EXAMPLE
+    ./setup-cursor-rules.ps1 -ProjectType fullstack
+#>
+
+param (
+    [Parameter(Mandatory=$true)]
+    [ValidateSet("frontend", "fullstack", "backend", "infra", "ai-agent-cli")]
+    [string]$ProjectType,
+
+    [string]$RulesSourceDir = "C:\Users\石岡大尚\Desktop\Development\.cursor\rules"
+)
+
+# 1. 共通ルール (全てのタイプで必須)
+$CommonRules = @(
+    "00-index.mdc",
+    "00-mindset.mdc",
+    "01-design-system.mdc",
+    "02-environment-setup.mdc",
+    "19-rule-usage-guide.mdc",
+    "22-tool-usage-policy.mdc",
+    "23-security-policy.mdc",
+    "26-implementation-process.mdc",
+    "40-architecture-and-layering.mdc"
+)
+
+# 2. タイプ別ルール定義
+$TypeSpecificRules = @{
+    "frontend" = @(
+        "03-git-github-workflow.mdc",
+        "04-frontend-basics.mdc",
+        "05-react-patterns.mdc",
+        "06-component-driven-development.mdc",
+        "10-frontend-quality-assurance.mdc",
+        "11-code-hygiene-and-refactoring.mdc",
+        "13-deployment-paas.mdc",
+        "37-ux-research-and-ia.mdc",
+        "38-forms-validation-and-error-ux.mdc",
+        "39-layout-and-responsive-strategy.mdc"
+    )
+
+    "backend" = @(
+        "03-git-github-workflow.mdc",
+        "07-nodejs-best-practices.mdc",
+        "08-supabase-rules.mdc",
+        "09-integration-and-api-contracts.mdc",
+        "11-code-hygiene-and-refactoring.mdc",
+        "12-docker-best-practices.mdc",
+        "20-gcp-deploy-complete-guide.mdc",
+        "27-testing-strategy.mdc",
+        "28-observability-and-logging.mdc",
+        "34-data-modeling-and-naming.mdc"
+    )
+
+    "fullstack" = @(
+        "03-git-github-workflow.mdc",
+        "04-frontend-basics.mdc",
+        "05-react-patterns.mdc",
+        "06-component-driven-development.mdc",
+        "07-nodejs-best-practices.mdc",
+        "08-supabase-rules.mdc",
+        "09-integration-and-api-contracts.mdc",
+        "10-frontend-quality-assurance.mdc",
+        "11-code-hygiene-and-refactoring.mdc",
+        "12-docker-best-practices.mdc",
+        "13-deployment-paas.mdc",
+        "20-gcp-deploy-complete-guide.mdc",
+        "27-testing-strategy.mdc",
+        "28-observability-and-logging.mdc",
+        "30-non-functional-requirements.mdc",
+        "31-product-vision-and-problem-framing.mdc",
+        "32-functional-requirements-and-usecases.mdc",
+        "33-domain-modeling-and-glossary.mdc",
+        "34-data-modeling-and-naming.mdc",
+        "37-ux-research-and-ia.mdc",
+        "38-forms-validation-and-error-ux.mdc",
+        "39-layout-and-responsive-strategy.mdc"
+    )
+    
+    "infra" = @(
+        "12-docker-best-practices.mdc",
+        "20-gcp-deploy-complete-guide.mdc",
+        "28-observability-and-logging.mdc",
+        "30-non-functional-requirements.mdc"
+    )
+
+    "ai-agent-cli" = @(
+        "07-nodejs-best-practices.mdc",
+        "12-docker-best-practices.mdc",
+        "14-scraping-rules.mdc",
+        "29-ai-product-rules.mdc"
+    )
+}
+
+# 3. 実行ロジック
+$TargetRules = $CommonRules + $TypeSpecificRules[$ProjectType]
+$DestDir = ".cursor/rules"
+
+if (-not (Test-Path $DestDir)) {
+    New-Item -ItemType Directory -Path $DestDir -Force | Out-Null
+    Write-Host "Created directory: $DestDir" -ForegroundColor Green
+}
+
+foreach ($Rule in $TargetRules) {
+    $SourcePath = Join-Path $RulesSourceDir $Rule
+    $DestPath = Join-Path $DestDir $Rule
+
+    if (Test-Path $SourcePath) {
+        Copy-Item -Path $SourcePath -Destination $DestPath -Force
+        Write-Host "Installed: $Rule" -ForegroundColor Cyan
+    } else {
+        Write-Host "Warning: Rule file not found: $Rule" -ForegroundColor Yellow
+    }
+}
+
+Write-Host "`nSetup complete for project type: $ProjectType" -ForegroundColor Green
 ```
-
-### ステップ4: コピーしたルールの記録
-プロジェクトフォルダに `RULES_USED.md` を作成し、使用したルールを記録：
-
-```markdown
-# 使用ルール一覧
-
-## 必須ルール
-- 00-mindset.mdc
-- 02-environment-setup.mdc
-- 22-tool-usage-policy.mdc
-- 23-security-policy.mdc
-
-## プロジェクトタイプ別ルール
-- 01-design-system.mdc
-- 04-frontend-basics.mdc
-- 05-react-patterns.mdc
-- 10-frontend-quality-assurance.mdc
-
-## コピー日時
-2025-01-XX
-```
-
-## 5. プロジェクト固有のルール追加
-
-プロジェクトの進行中に、プロジェクト固有のルールが必要になった場合：
-
-1. プロジェクトフォルダの `.cursor/rules/` に新しいルールファイルを作成
-2. ファイル名は `XX-project-specific-[名前].mdc` 形式（XXは番号）
-3. プロジェクト固有のルールは、既存のルールに影響を与えない
-
-**例:**
-```
-.cursor/rules/26-project-specific-api-rules.mdc
-.cursor/rules/27-project-specific-ui-components.mdc
-```
-
-## 6. プロジェクト完了後のルール統合判断
-
-プロジェクトが完了したら、以下の判断を行ってください：
-
-### 6.1 統合すべきか判断基準
-
-**統合すべき:**
-- 複数のプロジェクトで再利用可能なルール
-- 汎用的なベストプラクティス
-- 他のプロジェクトでも役立つ可能性が高い
-
-**統合しない:**
-- プロジェクト固有のビジネスロジック
-- そのプロジェクトだけで有効な制約
-- 実験的なルール（まだ検証が必要）
-
-### 6.2 統合手順
-
-1. プロジェクトフォルダの `.cursor/rules/` を確認
-2. 統合すべきルールを特定
-3. メインの `.cursor/rules/` にコピー
-4. ファイル名を適切にリネーム（重複しない番号を付与）
-5. `00-index.mdc` に追加
-6. プロジェクトフォルダのルールは削除せず、アーカイブとして残す
-
-## 7. AIへの指示
-
-プロジェクト開始時に、以下のように指示してください：
-
-```
-「新しい[プロジェクトタイプ]プロジェクトを作成します。
-@/.cursor/rules/00-rule-selector.mdc に従って、必要なルールを判断し、
-プロジェクトフォルダにコピーしてください。
-
-プロジェクト情報:
-- タイプ: [フロントエンドのみ/フルスタック/バックエンドのみ]
-- デプロイ先: [Vercel/GCP/その他]
-- デザインタイプ: [クリエイティブ/実用]
-- プロジェクトパス: [パス]
-」
-```
-
-## 8. ルールの進化サイクル
-
-```
-1. プロジェクト開始
-   ↓
-2. ルールセレクターで必要なルールを判断
-   ↓
-3. プロジェクトフォルダにルールをコピー
-   ↓
-4. プロジェクト固有のルールを追加・カスタマイズ
-   ↓
-5. 開発を進める（プロジェクト内のルールを参照）
-   ↓
-6. プロジェクト完了
-   ↓
-7. プロジェクト固有のルールを評価
-   ↓
-8. 汎用的なルールをメインルールに統合
-   ↓
-9. 次回のプロジェクトで統合されたルールが利用可能
-```
-
-このサイクルにより、ルールは実際の開発経験に基づいて進化していきます。
